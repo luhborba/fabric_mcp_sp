@@ -1,0 +1,500 @@
+{
+  "meta": {
+    "version": "1.0",
+    "last_updated": "2026-04-13",
+    "total_tools": 65,
+    "protocol": "MCP 1.0"
+  },
+  "domains": {
+    "workspaces": {
+      "description": "Gerenciar workspaces, capacidades e permissões",
+      "tools_count": 8,
+      "tools": [
+        {
+          "name": "list_workspaces",
+          "description": "Listar todos os workspaces do tenant",
+          "params": ["capacity_id?"],
+          "returns": "[Workspace]",
+          "examples": ["Liste todos os workspaces", "Quantos workspaces tenho?"]
+        },
+        {
+          "name": "get_workspace",
+          "description": "Obter detalhes de um workspace",
+          "params": ["workspace_id"],
+          "returns": "Workspace",
+          "examples": ["Olhe os detalhes do workspace [ID]"]
+        },
+        {
+          "name": "create_workspace",
+          "description": "Criar novo workspace",
+          "params": ["display_name", "description?", "capacity_id?"],
+          "returns": "Workspace",
+          "examples": ["Crie um workspace chamado analytics-prod"]
+        },
+        {
+          "name": "delete_workspace",
+          "description": "Deletar workspace (irreversível)",
+          "params": ["workspace_id"],
+          "returns": "{success: bool}",
+          "examples": ["Delete the workspace [ID]"]
+        },
+        {
+          "name": "update_workspace",
+          "description": "Atualizar metadados do workspace",
+          "params": ["workspace_id", "display_name?", "description?"],
+          "returns": "Workspace",
+          "examples": ["Renomear workspace para [novo_nome]"]
+        },
+        {
+          "name": "list_role_assignments",
+          "description": "Ver quem tem acesso ao workspace",
+          "params": ["workspace_id"],
+          "returns": "[RoleAssignment]",
+          "examples": ["Quem tem acesso ao workspace [ID]?", "Auditar permissões"]
+        },
+        {
+          "name": "add_role_assignment",
+          "description": "Adicionar usuário/grupo ao workspace",
+          "params": ["workspace_id", "principal_id", "principal_type", "role"],
+          "returns": "RoleAssignment",
+          "examples": ["Adicione [email] como Member no workspace"]
+        },
+        {
+          "name": "remove_role_assignment",
+          "description": "Remover acesso de um usuário/grupo",
+          "params": ["workspace_id", "principal_id"],
+          "returns": "{success: bool}",
+          "examples": ["Remova [email] do workspace"]
+        }
+      ]
+    },
+    "lakehouses": {
+      "description": "Gerenciar lakehouses e dados no OneLake",
+      "tools_count": 7,
+      "tools": [
+        {
+          "name": "list_lakehouses",
+          "description": "Listar lakehouses do workspace",
+          "params": ["workspace_id"],
+          "returns": "[Lakehouse]",
+          "examples": ["Liste os lakehouses do workspace [ID]"]
+        },
+        {
+          "name": "create_lakehouse",
+          "description": "Criar novo lakehouse",
+          "params": ["workspace_id", "display_name", "description?"],
+          "returns": "Lakehouse",
+          "examples": ["Crie um lakehouse chamado bronze"]
+        },
+        {
+          "name": "get_lakehouse",
+          "description": "Obter detalhes do lakehouse",
+          "params": ["workspace_id", "lakehouse_id"],
+          "returns": "Lakehouse",
+          "examples": ["Mostre detalhes do lakehouse [ID]"]
+        },
+        {
+          "name": "onelake_list_files",
+          "description": "Listar arquivos/pastas no OneLake",
+          "params": ["workspace_id", "lakehouse_id", "folder_path?"],
+          "returns": "[File]",
+          "examples": ["Liste os arquivos do lakehouse", "O que tem em /raw?"]
+        },
+        {
+          "name": "onelake_read_file",
+          "description": "Ler arquivo do OneLake",
+          "params": ["workspace_id", "lakehouse_id", "file_path"],
+          "returns": "File (conteúdo)",
+          "examples": ["Leia o arquivo customers.csv", "Mostre primeiras linhas do parquet"]
+        },
+        {
+          "name": "onelake_write_file",
+          "description": "Escrever arquivo no OneLake",
+          "params": ["workspace_id", "lakehouse_id", "file_path", "content"],
+          "returns": "{success: bool}",
+          "examples": ["Salve este arquivo no lakehouse"]
+        },
+        {
+          "name": "execute_lakehouse_query",
+          "description": "Executar query SQL no Lakehouse",
+          "params": ["workspace_id", "lakehouse_id", "query"],
+          "returns": "[Row]",
+          "examples": ["SELECT * FROM my_table WHERE active=1"]
+        }
+      ]
+    },
+    "warehouses": {
+      "description": "Gerenciar SQL Data Warehouses",
+      "tools_count": 5,
+      "tools": [
+        {
+          "name": "list_warehouses",
+          "description": "Listar warehouses do workspace",
+          "params": ["workspace_id"],
+          "returns": "[Warehouse]",
+          "examples": ["Liste os warehouses"]
+        },
+        {
+          "name": "create_warehouse",
+          "description": "Criar novo warehouse",
+          "params": ["workspace_id", "display_name", "description?"],
+          "returns": "Warehouse",
+          "examples": ["Crie um warehouse chamado dwh-prod"]
+        },
+        {
+          "name": "get_warehouse_connection",
+          "description": "Obter string de conexão",
+          "params": ["workspace_id", "warehouse_id"],
+          "returns": "Connection (server, db, port)",
+          "examples": ["Me dê a connection string do warehouse"]
+        },
+        {
+          "name": "execute_warehouse_query",
+          "description": "Executar query T-SQL",
+          "params": ["workspace_id", "warehouse_id", "query"],
+          "returns": "[Row]",
+          "examples": ["SELECT TOP 10 * FROM Sales"]
+        },
+        {
+          "name": "get_warehouse_status",
+          "description": "Ver status (ready, paused, etc)",
+          "params": ["workspace_id", "warehouse_id"],
+          "returns": "Status",
+          "examples": ["Warehouse está ativo?"]
+        }
+      ]
+    },
+    "notebooks": {
+      "description": "Gerenciar notebooks Spark/Python",
+      "tools_count": 8,
+      "tools": [
+        {
+          "name": "list_notebooks",
+          "description": "Listar notebooks do workspace",
+          "params": ["workspace_id"],
+          "returns": "[Notebook]",
+          "examples": ["Liste os notebooks"]
+        },
+        {
+          "name": "create_notebook",
+          "description": "Criar novo notebook",
+          "params": ["workspace_id", "display_name", "description?", "code?"],
+          "returns": "Notebook",
+          "examples": ["Crie um notebook chamado ETL_Pipeline"]
+        },
+        {
+          "name": "get_notebook",
+          "description": "Obter metadados do notebook",
+          "params": ["workspace_id", "notebook_id"],
+          "returns": "Notebook (metadados)",
+          "examples": ["Mostre detalhes do notebook"]
+        },
+        {
+          "name": "get_notebook_definition",
+          "description": "Obter código-fonte completo",
+          "params": ["workspace_id", "notebook_id"],
+          "returns": "Definition (código)",
+          "examples": ["Mostre o código do notebook"]
+        },
+        {
+          "name": "update_notebook",
+          "description": "Atualizar código",
+          "params": ["workspace_id", "notebook_id", "code"],
+          "returns": "Notebook",
+          "examples": ["Atualize o notebook com novo código"]
+        },
+        {
+          "name": "execute_notebook",
+          "description": "Executar notebook",
+          "params": ["workspace_id", "notebook_id", "parameters?"],
+          "returns": "Execution (status, output)",
+          "examples": ["Execute o notebook"]
+        },
+        {
+          "name": "get_notebook_execution",
+          "description": "Ver resultado/logs de execução",
+          "params": ["workspace_id", "notebook_id", "execution_id"],
+          "returns": "Execution (logs, result)",
+          "examples": ["Mostre o resultado da execução"]
+        },
+        {
+          "name": "delete_notebook",
+          "description": "Deletar notebook",
+          "params": ["workspace_id", "notebook_id"],
+          "returns": "{success: bool}",
+          "examples": ["Delete the notebook"]
+        }
+      ]
+    },
+    "pipelines": {
+      "description": "Gerenciar pipelines de orquestração",
+      "tools_count": 6,
+      "tools": [
+        {
+          "name": "list_pipelines",
+          "description": "Listar pipelines do workspace",
+          "params": ["workspace_id"],
+          "returns": "[Pipeline]",
+          "examples": ["Liste as pipelines"]
+        },
+        {
+          "name": "create_pipeline",
+          "description": "Criar nova pipeline",
+          "params": ["workspace_id", "display_name", "description?"],
+          "returns": "Pipeline",
+          "examples": ["Crie uma pipeline chamada ETL_Daily"]
+        },
+        {
+          "name": "add_pipeline_activity",
+          "description": "Adicionar atividade (notebook, SQL, etc)",
+          "params": ["workspace_id", "pipeline_id", "activity_def"],
+          "returns": "Activity",
+          "examples": ["Adicione o notebook como atividade"]
+        },
+        {
+          "name": "run_pipeline",
+          "description": "Executar pipeline",
+          "params": ["workspace_id", "pipeline_id"],
+          "returns": "Run (run_id)",
+          "examples": ["Execute a pipeline"]
+        },
+        {
+          "name": "get_pipeline_run",
+          "description": "Ver status/resultado da execução",
+          "params": ["workspace_id", "pipeline_id", "run_id"],
+          "returns": "Run (status, logs)",
+          "examples": ["Cual foi o resultado?"]
+        },
+        {
+          "name": "list_pipeline_runs",
+          "description": "Histórico de execuções",
+          "params": ["workspace_id", "pipeline_id"],
+          "returns": "[Run]",
+          "examples": ["Mostre o histórico de execuções"]
+        }
+      ]
+    },
+    "semantic_models": {
+      "description": "Gerenciar modelos semânticos e DAX",
+      "tools_count": 6,
+      "tools": [
+        {
+          "name": "list_semantic_models",
+          "description": "Listar modelos do workspace",
+          "params": ["workspace_id"],
+          "returns": "[SemanticModel]",
+          "examples": ["Liste os modelos semânticos"]
+        },
+        {
+          "name": "create_semantic_model",
+          "description": "Criar novo modelo",
+          "params": ["workspace_id", "display_name", "pbix_file?"],
+          "returns": "SemanticModel",
+          "examples": ["Crie um modelo chamado FinanceModel"]
+        },
+        {
+          "name": "get_semantic_model_schema",
+          "description": "Explorar estrutura (tabelas, colunas)",
+          "params": ["workspace_id", "semantic_model_id"],
+          "returns": "Schema (tables, columns, types)",
+          "examples": ["Qual é o schema do modelo?"]
+        },
+        {
+          "name": "execute_dax_query",
+          "description": "Executar query DAX",
+          "params": ["workspace_id", "semantic_model_id", "dax_query"],
+          "returns": "[Row]",
+          "examples": ["EVALUATE TOPN(10, 'Sales')"]
+        },
+        {
+          "name": "refresh_semantic_model",
+          "description": "Fazer refresh do modelo",
+          "params": ["workspace_id", "semantic_model_id"],
+          "returns": "Refresh (status, end_time)",
+          "examples": ["Refresh o modelo"]
+        },
+        {
+          "name": "get_semantic_model_refresh_history",
+          "description": "Ver histórico de refreshes",
+          "params": ["workspace_id", "semantic_model_id"],
+          "returns": "[Refresh]",
+          "examples": ["Quando foi o último refresh?"]
+        }
+      ]
+    },
+    "spark_jobs": {
+      "description": "Gerenciar Spark Jobs",
+      "tools_count": 6,
+      "tools": [
+        {
+          "name": "list_spark_jobs",
+          "description": "Listar spark jobs do workspace",
+          "params": ["workspace_id"],
+          "returns": "[SparkJob]",
+          "examples": ["Liste os Spark Jobs"]
+        },
+        {
+          "name": "create_spark_job",
+          "description": "Criar novo spark job",
+          "params": ["workspace_id", "display_name", "main_file", "parameters?"],
+          "returns": "SparkJob",
+          "examples": ["Crie um job chamado DataProcessing"]
+        },
+        {
+          "name": "get_spark_job",
+          "description": "Obter definição do job",
+          "params": ["workspace_id", "spark_job_id"],
+          "returns": "SparkJob (detalhes)",
+          "examples": ["Mostre a definição do job"]
+        },
+        {
+          "name": "run_spark_job",
+          "description": "Executar job",
+          "params": ["workspace_id", "spark_job_id", "parameters?"],
+          "returns": "Run (run_id)",
+          "examples": ["Execute o job"]
+        },
+        {
+          "name": "get_spark_job_run",
+          "description": "Ver resultado da execução",
+          "params": ["workspace_id", "spark_job_id", "run_id"],
+          "returns": "Run (status, logs, output)",
+          "examples": ["Como foi a execução?"]
+        },
+        {
+          "name": "list_spark_job_runs",
+          "description": "Histórico de execuções",
+          "params": ["workspace_id", "spark_job_id"],
+          "returns": "[Run]",
+          "examples": ["Queremos o histórico"]
+        }
+      ]
+    },
+    "reports": {
+      "description": "Gerenciar relatórios Power BI",
+      "tools_count": 5,
+      "tools": [
+        {
+          "name": "list_reports",
+          "description": "Listar relatórios do workspace",
+          "params": ["workspace_id"],
+          "returns": "[Report]",
+          "examples": ["Liste os relatórios"]
+        },
+        {
+          "name": "create_report",
+          "description": "Fazer upload de relatório",
+          "params": ["workspace_id", "display_name", "pbix_file"],
+          "returns": "Report",
+          "examples": ["Upload o arquivo .pbix como relatório"]
+        },
+        {
+          "name": "get_report",
+          "description": "Obter detalhes do relatório",
+          "params": ["workspace_id", "report_id"],
+          "returns": "Report (metadados, pages)",
+          "examples": ["Mostre os detalhes"]
+        },
+        {
+          "name": "update_report_datasource",
+          "description": "Apontar para modelo diferente",
+          "params": ["workspace_id", "report_id", "semantic_model_id"],
+          "returns": "Report",
+          "examples": ["Mude a fonte de dados"]
+        },
+        {
+          "name": "export_report",
+          "description": "Exportar relatório (PDF, PNG, PPTX)",
+          "params": ["workspace_id", "report_id", "format"],
+          "returns": "File (PDF/PNG/PPTX)",
+          "examples": ["Exporte em PDF"]
+        }
+      ]
+    },
+    "onelake": {
+      "description": "Gerenciar arquivos no OneLake (ADLS Gen2)",
+      "tools_count": 8,
+      "tools": [
+        {
+          "name": "onelake_list_files",
+          "description": "Listar arquivos/pastas",
+          "params": ["workspace_id", "lakehouse_id", "folder_path?"],
+          "returns": "[File]",
+          "examples": ["O que tem em /raw?"]
+        },
+        {
+          "name": "onelake_read_file",
+          "description": "Ler arquivo inteiro",
+          "params": ["workspace_id", "lakehouse_id", "file_path"],
+          "returns": "Content (bytes)",
+          "examples": ["Leia o arquivo CSV"]
+        },
+        {
+          "name": "onelake_write_file",
+          "description": "Escrever arquivo",
+          "params": ["workspace_id", "lakehouse_id", "file_path", "content"],
+          "returns": "{success: bool}",
+          "examples": ["Salve este conteúdo"]
+        },
+        {
+          "name": "onelake_append_file",
+          "description": "Append a arquivo",
+          "params": ["workspace_id", "lakehouse_id", "file_path", "content"],
+          "returns": "{success: bool}",
+          "examples": ["Adicione estas linhas ao arquivo"]
+        },
+        {
+          "name": "onelake_copy_file",
+          "description": "Copiar arquivo",
+          "params": ["workspace_id", "src_path", "dst_path"],
+          "returns": "{success: bool}",
+          "examples": ["Copie o arquivo para /backup"]
+        },
+        {
+          "name": "onelake_delete_file",
+          "description": "Deletar arquivo",
+          "params": ["workspace_id", "lakehouse_id", "file_path"],
+          "returns": "{success: bool}",
+          "examples": ["Delete o arquivo antigo"]
+        },
+        {
+          "name": "onelake_upload_batch",
+          "description": "Upload múltiplos arquivos",
+          "params": ["workspace_id", "lakehouse_id", "files"],
+          "returns": "[Upload]",
+          "examples": ["Faça upload de todos os CSV"]
+        },
+        {
+          "name": "onelake_get_file_properties",
+          "description": "Metadados do arquivo",
+          "params": ["workspace_id", "lakehouse_id", "file_path"],
+          "returns": "Properties (size, modified, etc)",
+          "examples": ["Qual o tamanho do arquivo?"]
+        }
+      ]
+    }
+  },
+  "statistics": {
+    "total_tools": 65,
+    "by_domain": {
+      "workspaces": 8,
+      "lakehouses": 7,
+      "warehouses": 5,
+      "notebooks": 8,
+      "pipelines": 6,
+      "spark_jobs": 6,
+      "semantic_models": 6,
+      "reports": 5,
+      "onelake": 8
+    },
+    "average_params": 2.5,
+    "docs_coverage": "100%"
+  },
+  "quick_examples": {
+    "list_workspaces": "List all workspaces in the tenant",
+    "create_workspace": "Create a new workspace named 'analytics-prod'",
+    "describe_lakehouse_schema": "Show me the schema of [lakehouse_id]",
+    "execute_sql": "Run SELECT statement on warehouse",
+    "create_pipeline": "Build an ETL pipeline with activities"
+  }
+}
